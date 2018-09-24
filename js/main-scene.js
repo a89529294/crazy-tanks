@@ -2,10 +2,12 @@ let cursors;
 let tank;
 let keys;
 let bullet;
-let tankSpeed = 100;
+const tankSpeed = 100;
 let initTankAngle;
 const tankFiringSpeed = 1000;
 let initFireTime;
+let bullets;
+let walls;
 export default class MainScene extends Phaser.Scene {
   preload() {
     this.load.image('tank', './assets/tank.png');
@@ -26,8 +28,8 @@ export default class MainScene extends Phaser.Scene {
     const tileset = map.addTilesetImage("cottage");
 
     //Parameters: layer name (or index) from Tiled, tileset, x, y
-    map.createDynamicLayer("Background", tileset, 0, 0);
-    const walls = map.createStaticLayer("Foreground", tileset, 0, 0);
+    map.createStaticLayer("Background", tileset, 0, 0);
+    walls = map.createStaticLayer("Foreground", tileset, 0, 0);
 
     // DO NOT DELETE
     // walls.setCollisionByProperty({
@@ -46,19 +48,31 @@ export default class MainScene extends Phaser.Scene {
     // });
 
     // Set the tank at the center of the 800 x 576 screen and scale tank down to the size of one tile.
-    tank = this.physics.add.sprite(800 / 2, 576 / 2, 'tank').setScale(32 / 512, 32 / 512);
+    tank = this.physics.add.sprite(1400 / 2, 576 / 2, 'tank').setScale(32 / 512, 32 / 512);
     this.physics.add.collider(tank, walls);
+
+    //create an empty bullets group
+    //bullets = this.physics.add.group();
+    //this.physics.add.collider(bullets, walls, this.foo);
+
 
     cursors = this.input.keyboard.createCursorKeys();
     keys = this.input.keyboard.addKeys({
       'space': Phaser.Input.Keyboard.KeyCodes.SPACE
     });
 
+  }
 
+  foo() {
+    console.log('in foo');
+    bullet.disableBody(true, true);
+    // bullets.getChildren().forEach((bullet) => {
+    //   bullet.disableBody(true, true);
+    // })
   }
 
   update() {
-
+    this.physics.add.collider(walls, bullet, this.foo);
     let radianAngle = Math.PI * tank.angle / 180;
 
 
@@ -81,14 +95,15 @@ export default class MainScene extends Phaser.Scene {
     }
     if (keys.space.isDown) {
       if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
-        bullet = this.add.sprite(tank.x, tank.y, 'bullet');
+        if (bullet) bullet.disableBody(true, true);
+        bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
+        //bullet = bullets.create(tank.x + 100, tank.y + 100, 'bullet');
+        //bullet.setCollideWorldBounds(true);
+        //console.log("number of bullets", +bullets.getChildren().length)
         initTankAngle = tank.angle;
         bullet.angle = initTankAngle;
         initFireTime = Date.now();
       }
-
-
-
 
     }
 
