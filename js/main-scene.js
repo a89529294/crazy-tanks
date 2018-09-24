@@ -3,7 +3,9 @@ let tank;
 let keys;
 let bullet;
 let tankSpeed = 100;
-
+let initTankAngle;
+const tankFiringSpeed = 1000;
+let initFireTime;
 export default class MainScene extends Phaser.Scene {
   preload() {
     this.load.image('tank', './assets/tank.png');
@@ -44,7 +46,7 @@ export default class MainScene extends Phaser.Scene {
     // });
 
     // Set the tank at the center of the 800 x 576 screen and scale tank down to the size of one tile.
-    tank = this.physics.add.sprite(100 / 2, 576 / 2, 'tank').setScale(32 / 512, 32 / 512);
+    tank = this.physics.add.sprite(800 / 2, 576 / 2, 'tank').setScale(32 / 512, 32 / 512);
     this.physics.add.collider(tank, walls);
 
     cursors = this.input.keyboard.createCursorKeys();
@@ -58,6 +60,8 @@ export default class MainScene extends Phaser.Scene {
   update() {
 
     let radianAngle = Math.PI * tank.angle / 180;
+
+
     tank.body.setVelocity(0);
 
     if (cursors.left.isDown) {
@@ -76,13 +80,21 @@ export default class MainScene extends Phaser.Scene {
       tank.body.setVelocityY(Math.sin(radianAngle) * tankSpeed);
     }
     if (keys.space.isDown) {
-      bullet = this.add.sprite(tank.x, tank.y, 'bullet');
-      bullet.angle = tank.angle;
+      if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
+        bullet = this.add.sprite(tank.x, tank.y, 'bullet');
+        initTankAngle = tank.angle;
+        bullet.angle = initTankAngle;
+        initFireTime = Date.now();
+      }
+
+
+
+
     }
 
     if (bullet) {
-      bullet.x += Math.cos(radianAngle);
-      bullet.y += Math.sin(radianAngle);
+      bullet.x += Math.cos(Math.PI * initTankAngle / 180);
+      bullet.y += Math.sin(Math.PI * initTankAngle / 180);
     }
 
   }
