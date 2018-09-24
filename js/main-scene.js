@@ -20,7 +20,11 @@ export default class MainScene extends Phaser.Scene {
   }
   else if (cursors.right.isDown ) {
     tank.angle++;
-
+  }
+  else if (cursors.up.isDown) {
+    var radianAngle = Math.PI*tank.angle/180;
+    tank.x += Math.sin(radianAngle);
+    tank.y += -Math.cos(radianAngle);
   }
   }
 
