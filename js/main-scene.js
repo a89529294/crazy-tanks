@@ -20,7 +20,6 @@ export default class MainScene extends Phaser.Scene {
   }
   else if (cursors.right.isDown ) {
     tank.angle++;
-
   }
   }
 
