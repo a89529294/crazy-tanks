@@ -7,10 +7,25 @@ export default class MainScene extends Phaser.Scene {
     this.load.image('tank', './assets/tank.png');
     this.load.image('bullet', './assets/bullet.png');
 
+    // Load tileset and tilesmap
+    this.load.image("cottage", "./assets/tilesets/cottage.png");
+    this.load.tilemapTiledJSON("level1", "./assets/tilemaps/level1.json");
   }
 
   create() {
-    tank = this.add.sprite(50, 50, 'tank').setScale(0.1, 0.1);
+
+    // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
+    // Phaser's cache (i.e. the name you used in preload)
+    const map = this.make.tilemap({
+      key: "level1"
+    });
+    const tileset = map.addTilesetImage("cottage");
+
+    //Parameters: layer name (or index) from Tiled, tileset, x, y
+    map.createDynamicLayer("Background", tileset, 0, 0);
+    const walls = map.createStaticLayer("Foreground", tileset, 0, 0);
+
+    tank = this.add.sprite(400, 300, 'tank').setScale(0.1, 0.1);
 
     cursors = this.input.keyboard.createCursorKeys();
     keys = this.input.keyboard.addKeys({
@@ -42,6 +57,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     if (bullet) {
+      var radianAngle = Math.PI * tank.angle / 180;
       bullet.x += Math.cos(radianAngle);
       bullet.y += Math.sin(radianAngle);
     }
