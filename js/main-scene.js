@@ -2,6 +2,7 @@ let cursors;
 let tank;
 let keys;
 let bullet;
+
 export default class MainScene extends Phaser.Scene {
   preload() {
     this.load.image('tank', './assets/tank.png');
@@ -25,7 +26,8 @@ export default class MainScene extends Phaser.Scene {
     map.createDynamicLayer("Background", tileset, 0, 0);
     const walls = map.createStaticLayer("Foreground", tileset, 0, 0);
 
-    tank = this.add.sprite(400, 300, 'tank').setScale(0.1, 0.1);
+    // Set the tank at the center of the 800 x 576 screen and scale tank down to the size of one tile.
+    tank = this.add.sprite(800 / 2, 576 / 2, 'tank').setScale(32 / 512, 32 / 512);
 
     cursors = this.input.keyboard.createCursorKeys();
     keys = this.input.keyboard.addKeys({
