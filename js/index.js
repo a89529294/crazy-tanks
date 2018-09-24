@@ -9,7 +9,14 @@ const config = {
   parent: "game-container",
   scene: MainScene,
   // pixelArt: true,
-  // physics: { default: "matter" },
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: {
+        y: 0
+      } // Top down game, so no gravity
+    }
+  },
 
 };
 
