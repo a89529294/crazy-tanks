@@ -48,13 +48,12 @@ export default class MainScene extends Phaser.Scene {
     // });
 
     // Set the tank at the center of the 800 x 576 screen and scale tank down to the size of one tile.
-    tank = this.physics.add.sprite(1400 / 2, 576 / 2, 'tank').setScale(32 / 512, 32 / 512);
-    bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
+    tank = this.physics.add.sprite(800 / 2, 576 / 2, 'tank').setScale(32 / 512, 32 / 512);
     this.physics.add.collider(tank, walls, this.foo);
 
     //create an empty bullets group
-    //bullets = this.physics.add.group();
-    this.physics.add.collider(bullet, walls, this.foo);
+    bullets = this.physics.add.group();
+    this.physics.add.collider(bullets, walls, this.foo);
 
 
     cursors = this.input.keyboard.createCursorKeys();
@@ -66,10 +65,7 @@ export default class MainScene extends Phaser.Scene {
 
   foo() {
     console.log('in foo');
-    bullet.disableBody(true, true);
-    // bullets.getChildren().forEach((bullet) => {
-    //   bullet.disableBody(true, true);
-    // })
+    bullets.getChildren()[bullets.getChildren().length - bullets.countActive(true)].disableBody(true, true);
   }
 
   update() {
@@ -93,15 +89,14 @@ export default class MainScene extends Phaser.Scene {
     }
     if (keys.space.isDown) {
       if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
-        if (bullet) bullet.disableBody(true, true);
-        bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
-        //bullet = bullets.create(tank.x + 100, tank.y + 100, 'bullet');
-        //bullet.setCollideWorldBounds(true);
-        //console.log("number of bullets", +bullets.getChildren().length)
+        //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
+        bullet = bullets.create(tank.x, tank.y, 'bullet');
+
+        console.log("number of bullets", +bullets.getChildren().length)
         initTankAngle = tank.angle;
         bullet.angle = initTankAngle;
         initFireTime = Date.now();
-        this.physics.add.collider(bullet, walls, this.foo);
+
       }
 
     }
