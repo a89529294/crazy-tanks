@@ -65,8 +65,9 @@ export default class MainScene extends Phaser.Scene {
 
   }
 
-  foo() {
-    bullets.getChildren()[bullets.getChildren().length - bullets.countActive(true)].disableBody(true, true);
+  foo(bullet) {
+    bullet.disableBody(true, true);
+    // bullets.getChildren()[bullets.getChildren().length - bullets.countActive(true)].disableBody(true, true);
   }
 
   update() {

@@ -24,9 +24,9 @@ export default class Enemy {
         this.scene.events.once("destroy", this.destroy, this);
     }
 
-    onCollideTrigger() {
-        console.log('in foo');
-        bullets.getChildren()[bullets.getChildren().length - bullets.countActive(true)].disableBody(true, true);
+    onCollideTrigger(bullet) {
+        bullet.disableBody(true, true);
+        //bullets.getChildren()[bullets.getChildren().length - bullets.countActive(true)].disableBody(true, true);
     }
 
     update() {

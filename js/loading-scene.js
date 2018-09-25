@@ -31,8 +31,9 @@ export default class LoadingScene extends Phaser.Scene {
             console.log('complete');
             // progressBar.destroy();
             // progressBox.destroy();
-            // loadingText.destroy();
+            loadingText.destroy();
             // percentText.destroy();
+            assetText.setText('Press any key to proceed');
             // assetText.destroy();
         });
 
