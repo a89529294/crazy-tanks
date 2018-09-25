@@ -23,15 +23,15 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    //rechage pack  //TODO make a group of recharge packs and spawn them randomly
+
     this.rechargePacks = this.physics.add.group({
       key: 'recharge',
       repeat: 2,
       setXY: {
         x: 50,
         y: 50,
-        stepX: 260,
-        stepY: 120
+        stepX: 200 + Math.random() * 130,
+        stepY: 100 + Math.random() * 50
       }
     });
     this.rechargePacks.getChildren().forEach((pack) => {
