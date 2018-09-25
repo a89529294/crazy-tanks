@@ -174,6 +174,22 @@ export default class MainScene extends Phaser.Scene {
     //}
   }
 
+  handleVictory() {
+    this.isGameOver = true;
+    this.tank.destroy();
+    bullets.getChildren().forEach((bullet) => {
+      bullet.destroy();
+    })
+    //bullets.destroy(true);
+    for (var i = 0; i < enemies.length; i++) {
+      enemies[i].destroy();
+      enemies[i].bullets.getChildren().forEach((bullet) => {
+        bullet.destroy();
+      })
+    }
+    this.scene.start('VictoryScene');
+  }
+
   handleBulletWallCollision(bullet) {
     bullet.disableBody(true, true);
     // bullets.getChildren()[bullets.getChildren().length - bullets.countActive(true)].disableBody(true, true);
@@ -201,13 +217,13 @@ export default class MainScene extends Phaser.Scene {
     //explosion animation
     this.explosion = this.physics.add.sprite(tank.x, tank.y, 'kaboom');
     this.explosion.anims.play('explosionAnimation');
-
+    enemies.length--;
     var allDestroyed = true;
     for (var i = 0; i < enemies.length; i++) {
       allDestroyed = allDestroyed && enemies[i].destroyed;
     }
     if (allDestroyed) {
-      this.explosion.on('animationcomplete', this.handleGameOver, this)
+      this.explosion.on('animationcomplete', this.handleVictory, this)
     }
   }
   handleRechargeTankInteraction(tank, rechargePack) {
@@ -222,6 +238,7 @@ export default class MainScene extends Phaser.Scene {
       this.tank.body.setVelocity(0);
 
       if (cursors.space.isDown) {
+
 
         if ((this.numOfBullets > 0) && (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed)) {
           //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
