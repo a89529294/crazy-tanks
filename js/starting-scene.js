@@ -3,6 +3,7 @@ export default class StartingScene extends Phaser.Scene {
         super('StartingScene');
     }
     preload() {
+
         this.load.image('startScreen', '../assets/startScreen.png');
         var width = this.cameras.main.width;
         var height = this.cameras.main.height;

@@ -8,6 +8,7 @@ let initTankAngle = 0;
 const tankFiringSpeed = 1000;
 let initFireTime;
 let bullets;
+let enemyBullets;
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -52,28 +53,46 @@ export default class MainScene extends Phaser.Scene {
 
     //create an empty bullets group
     bullets = this.physics.add.group();
-    this.physics.add.collider(bullets, this.walls, this.foo);
+    this.physics.add.collider(bullets, this.walls, this.handleBulletWallCollision);
 
     // Create an enemy
     this.enemy = new Enemy(this, 300, 300);
 
+    this.physics.add.collider(this.enemy.bullets, tank, this.handleTankBulletCollision);
 
     cursors = this.input.keyboard.createCursorKeys();
-    keys = this.input.keyboard.addKeys({
-      'space': Phaser.Input.Keyboard.KeyCodes.SPACE
-    });
+    //keys.space.isDown
+    // keys = this.input.keyboard.addKeys({
+    //   'space': Phaser.Input.Keyboard.KeyCodes.SPACE
+    // });
 
   }
 
-  foo(bullet) {
+  handleBulletWallCollision(bullet) {
     bullet.disableBody(true, true);
     // bullets.getChildren()[bullets.getChildren().length - bullets.countActive(true)].disableBody(true, true);
+  }
+
+  handleTankBulletCollision(tank, bullet) {
+    bullet.disableBody(true, true);
+    //tank.disableBody(true, true);
   }
 
   update() {
     let radianAngle = Math.PI * tank.angle / 180;
     tank.body.setVelocity(0);
 
+    if (cursors.space.isDown) {
+      if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
+        //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
+        bullet = bullets.create(tank.x, tank.y, 'bullet');
+
+        initTankAngle = tank.angle;
+        bullet.angle = initTankAngle;
+        initFireTime = Date.now();
+
+      }
+    }
     if (cursors.left.isDown) {
       tank.angle--;
     }
@@ -81,7 +100,6 @@ export default class MainScene extends Phaser.Scene {
       tank.angle++;
     }
     if (cursors.down.isDown) {
-
       tank.body.setVelocityX(-Math.cos(radianAngle) * tankSpeed);
       tank.body.setVelocityY(-Math.sin(radianAngle) * tankSpeed);
     }
@@ -89,20 +107,6 @@ export default class MainScene extends Phaser.Scene {
       tank.body.setVelocityX(Math.cos(radianAngle) * tankSpeed);
       tank.body.setVelocityY(Math.sin(radianAngle) * tankSpeed);
     }
-    if (keys.space.isDown) {
-      if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
-        //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
-        bullet = bullets.create(tank.x, tank.y, 'bullet');
-
-        console.log("number of bullets", +bullets.getChildren().length)
-        initTankAngle = tank.angle;
-        bullet.angle = initTankAngle;
-        initFireTime = Date.now();
-
-      }
-
-    }
-
     if (bullet) {
       bullet.body.setVelocityX(Math.cos(Math.PI * initTankAngle / 180) * 100);
       bullet.body.setVelocityY(Math.sin(Math.PI * initTankAngle / 180) * 100);
