@@ -42,31 +42,38 @@ export default class Enemy {
     movement() {
         // TODO: To be further modified for improving the movement algorithm.
         // this.sprite.body.angularVelocity = 50;
-        this.sprite.body.setVelocityX(25 * Math.cos(this.sprite.body.rotation / 180 * Math.PI));
-        this.sprite.body.setVelocityY(25 * Math.sin(this.sprite.body.rotation / 180 * Math.PI));
+        if (this.sprite.body) {
+            this.sprite.body.setVelocityX(25 * Math.cos(this.sprite.body.rotation / 180 * Math.PI));
+            this.sprite.body.setVelocityY(25 * Math.sin(this.sprite.body.rotation / 180 * Math.PI));
+        }
     }
 
     chasePlayer() {
-        let relativeX = this.scene.tank.body.x - this.sprite.body.x;
-        let relativeY = this.scene.tank.body.y - this.sprite.body.y;
-        let refAngleToPlayer = Math.abs(Math.atan(relativeY / relativeX));
-        let angleToPlayer = 0;
-        if (relativeX >= 0 && relativeY >= 0) angleToPlayer = refAngleToPlayer;
-        else if (relativeX >= 0 && relativeY < 0) angleToPlayer = (2 * Math.PI) - refAngleToPlayer;
-        else if (relativeX < 0 && relativeY >= 0) angleToPlayer = Math.PI - refAngleToPlayer;
-        else angleToPlayer = Math.PI + refAngleToPlayer;
+        if (this.sprite.body) {
+            let relativeX = this.scene.tank.body.x - this.sprite.body.x;
+            let relativeY = this.scene.tank.body.y - this.sprite.body.y;
+            let refAngleToPlayer = Math.abs(Math.atan(relativeY / relativeX));
+            let angleToPlayer = 0;
+            if (relativeX >= 0 && relativeY >= 0) angleToPlayer = refAngleToPlayer;
+            else if (relativeX >= 0 && relativeY < 0) angleToPlayer = (2 * Math.PI) - refAngleToPlayer;
+            else if (relativeX < 0 && relativeY >= 0) angleToPlayer = Math.PI - refAngleToPlayer;
+            else angleToPlayer = Math.PI + refAngleToPlayer;
 
-        this.sprite.angle = angleToPlayer * 180 / (Math.PI);
+            this.sprite.angle = angleToPlayer * 180 / (Math.PI);
+        }
     }
 
     fireBullets() {
-        // TODO: To be further modified for improving the firing algorithm.
-        if (isNaN(this.lastFireTime) || Date.now() - this.lastFireTime > this.fireRate) {
-            this.bullet = this.bullets.create(this.sprite.body.x, this.sprite.body.y, 'bullet');
-            this.bullet.angle = this.sprite.body.rotation;
-            this.bullet.body.setVelocityX(50 * Math.cos(this.bullet.angle / 180 * Math.PI));
-            this.bullet.body.setVelocityY(50 * Math.sin(this.bullet.angle / 180 * Math.PI));
-            this.lastFireTime = Date.now();
+        if (this.sprite.body) {
+            // TODO: To be further modified for improving the firing algorithm.
+            if (isNaN(this.lastFireTime) || Date.now() - this.lastFireTime > this.fireRate) {
+                this.bullet = this.bullets.create(this.sprite.body.x, this.sprite.body.y, 'bullet');
+                this.bullet.angle = this.sprite.body.rotation;
+                this.bullet.body.setVelocityX(50 * Math.cos(this.bullet.angle / 180 * Math.PI));
+                this.bullet.body.setVelocityY(50 * Math.sin(this.bullet.angle / 180 * Math.PI));
+                this.lastFireTime = Date.now();
+            }
+
         }
     }
 

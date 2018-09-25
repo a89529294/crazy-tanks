@@ -104,7 +104,7 @@ export default class MainScene extends Phaser.Scene {
 
     for (var i = 0; i < enemies.length; i++) {
       this.physics.add.collider(enemies[i].bullets, this.tank, this.handleTankBulletCollision, null, this);
-      this.physics.add.collider(bullets, enemies[i].sprite, this.handleTankBulletCollision, null, this);
+      this.physics.add.collider(bullets, enemies[i].sprite, this.handleEnemyTankBulletCollision, null, this);
     }
 
 
@@ -142,13 +142,13 @@ export default class MainScene extends Phaser.Scene {
   handleGameOver(e) {
     //if (e.keyCode === 13) {
     this.isGameOver = true;
-    enemies[0].destroy();
     this.tank.destroy();
     bullets.getChildren().forEach((bullet) => {
       bullet.destroy;
     })
     //bullets.destroy(true);
     for (var i = 0; i < enemies.length; i++) {
+      enemies[i].destroy();
       enemies[i].bullets.getChildren().forEach((bullet) => {
         bullet.destroy;
       })
@@ -172,12 +172,27 @@ export default class MainScene extends Phaser.Scene {
       //explosion animation
       this.explosion = this.physics.add.sprite(tank.x, tank.y, 'kaboom');
       this.explosion.anims.play('explosionAnimation');
-      this.explosion.on('animationcomplete', this.handleGameOver, this)
+      this.explosion.on('animationcomplete', this.handleGameOver, this);
     }
-
   }
 
+  handleEnemyTankBulletCollision(tank, bullet) {
+    bullet.disableBody(true, true);
+    tank.disableBody(true, true);
+    tank.destroy();
+    tank.destroyed = true;
+    //explosion animation
+    this.explosion = this.physics.add.sprite(tank.x, tank.y, 'kaboom');
+    this.explosion.anims.play('explosionAnimation');
 
+    var allDestroyed = true;
+    for (var i = 0; i < enemies.length; i++) {
+      allDestroyed = allDestroyed && enemies[i].destroyed;
+    }
+    if (allDestroyed) {
+      this.explosion.on('animationcomplete', this.handleGameOver, this)
+    }
+  }
 
   update() {
     if (!this.isGameOver) {
