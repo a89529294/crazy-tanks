@@ -1,3 +1,5 @@
+import Enemy from "./enemy.js";
+
 let cursors;
 let tank;
 let keys;
@@ -55,6 +57,8 @@ export default class MainScene extends Phaser.Scene {
     bullets = this.physics.add.group();
     this.physics.add.collider(bullets, walls, this.foo);
 
+    // Create an enemy
+    this.enemy = new Enemy(this, 300, 300);
 
     cursors = this.input.keyboard.createCursorKeys();
     keys = this.input.keyboard.addKeys({

@@ -3,7 +3,7 @@ export default class Enemy {
         this.scene = scene;
 
         // Create the physics-based sprite that we will move around and animate
-        this.sprite = scene.physics.add.sprite(0, 0, "tank").setScale(32 / 512, 32 / 512);
+        this.sprite = scene.physics.add.sprite(x, y, "tank").setScale(32 / 512, 32 / 512);
 
         // scene.matterCollision.addOnCollideStart({
         //   objectA: [this.sensors.bottom, this.sensors.left, this.sensors.right],
@@ -15,6 +15,7 @@ export default class Enemy {
         //   callback: this.onSensorCollide,
         //   context: this
         // });
+        this.sprite.tint = "0xff0000";
 
         this.destroyed = false;
         this.scene.events.on("update", this.update, this);
@@ -29,8 +30,8 @@ export default class Enemy {
         //     delay: 250,
         //     callback: () => (this.canJump = true)
         // });
-        this.body.setVelocityX(Math.random * 100 - 50)
-        this.body.setVelocityY(Math.random * 100 - 50)
+        this.sprite.body.setVelocityX(Math.random() * 100 - 50)
+        this.sprite.body.setVelocityY(Math.random() * 100 - 50)
     }
 
     destroy() {
