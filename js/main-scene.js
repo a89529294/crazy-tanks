@@ -122,9 +122,9 @@ export default class MainScene extends Phaser.Scene {
     if (cursors.space.isDown) {
       if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
         //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
-        bullet = bullets.create(tank.x, tank.y, 'bullet');
+        bullet = bullets.create(this.tank.x, this.tank.y, 'bullet');
 
-        initTankAngle = tank.angle;
+        initTankAngle = this.tank.angle;
         bullet.angle = initTankAngle;
         initFireTime = Date.now();
 
