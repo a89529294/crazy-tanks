@@ -19,6 +19,13 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
 
+    this.health = 3;
+    this.healthText = this.add.text(16, 16, 'Health: 3', {
+      fontSize: '32px',
+      fill: '#ffffff'
+    });
+    this.healthText.depth = 10;
+
     // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
     // Phaser's cache (i.e. the name you used in preload)
     const map = this.make.tilemap({
@@ -95,11 +102,17 @@ export default class MainScene extends Phaser.Scene {
 
   handleTankBulletCollision(tank, bullet) {
     bullet.disableBody(true, true);
-    tank.disableBody(true, true);
-    //explosion animation
-    this.explosion = this.physics.add.sprite(tank.x, tank.y, 'kaboom');
-    this.explosion.anims.play('explosionAnimation');
-    this.explosion.on('animationcomplete', this.handleGameOver, this)
+    this.health--;
+    this.healthText.setText("Health: " + String(this.health));
+
+    if (this.health <= 0) {
+      tank.disableBody(true, true);
+      //explosion animation
+      this.explosion = this.physics.add.sprite(tank.x, tank.y, 'kaboom');
+      this.explosion.anims.play('explosionAnimation');
+      this.explosion.on('animationcomplete', this.handleGameOver, this)
+    }
+
   }
 
   update() {
