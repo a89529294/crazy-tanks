@@ -36,10 +36,12 @@ export default class MainScene extends Phaser.Scene {
     // tileset = map.addTilesetImage("cottage");
     this.tileset_background = map.addTilesetImage("Outside_A2");
     this.tileset_foreground = map.addTilesetImage("Outside_A2");
+    this.tileset_foreground2 = map.addTilesetImage("Outside_A2");
 
     //Parameters: layer name (or index) from Tiled, tileset, x, y
     this.walls = map.createStaticLayer("Background", this.tileset_background, 0, 0);
-    this.foreground = map.createStaticLayer("Foreground", this.tileset_foreground, 0, 0);
+    this.foreground_walls = map.createStaticLayer("Foreground", this.tileset_foreground, 0, 0);
+    this.foreground_lakes = map.createStaticLayer("Foreground2", this.tileset_foreground2, 0, 0);
 
     // DO NOT DELETE
     // walls.setCollisionByProperty({
@@ -52,8 +54,13 @@ export default class MainScene extends Phaser.Scene {
     this.walls.setCollision(394);
     this.walls.setCollision(396);
     this.walls.setCollisionBetween(418, 420);
-    //this.foreground.setCollision(22);
+    this.foreground_walls.setCollisionBetween(379, 381);
+    this.foreground_walls.setCollisionBetween(403, 405);
+    this.foreground_walls.setCollisionBetween(427, 429);
 
+    this.foreground_lakes.setCollisionBetween(382, 384);
+    this.foreground_lakes.setCollisionBetween(406, 408);
+    this.foreground_lakes.setCollisionBetween(430, 432);
 
     // DO NOT DELETE
     // The following code is used for debugging.  Will be needed in the future to refactor collision.
@@ -67,10 +74,13 @@ export default class MainScene extends Phaser.Scene {
     // Set the tank at the center of the 800 x 576 screen and scale tank down to the size of one tile.
     this.tank = this.physics.add.sprite(800 / 2, 576 / 2, 'tank').setScale(32 / 512, 32 / 512);
     this.physics.add.collider(this.tank, this.walls);
+    this.physics.add.collider(this.tank, this.foreground_walls);
+    this.physics.add.collider(this.tank, this.foreground_lakes);
 
     //create an empty bullets group
     bullets = this.physics.add.group();
     this.physics.add.collider(bullets, this.walls, this.handleBulletWallCollision, null, this);
+    this.physics.add.collider(bullets, this.foreground_walls, this.handleBulletWallCollision, null, this);
 
     // Create an enemy
     this.enemy = new Enemy(this, 100, 100);

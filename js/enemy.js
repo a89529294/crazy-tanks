@@ -15,6 +15,13 @@ export default class Enemy {
         this.scene.physics.add.collider(this.bullets, this.scene.walls, this.onCollideTrigger);
         this.scene.physics.add.collider(this.scene.walls, this.sprite);
 
+        // foreground walls collision
+        this.scene.physics.add.collider(this.bullets, this.scene.foreground_walls, this.onCollideTrigger);
+        this.scene.physics.add.collider(this.scene.foreground_walls, this.sprite);
+
+        // foreground lakes collision
+        this.scene.physics.add.collider(this.scene.foreground_lakes, this.sprite);
+
         this.destroyed = false;
         this.scene.events.on("update", this.update, this);
         this.scene.events.once("shutdown", this.destroy, this);
