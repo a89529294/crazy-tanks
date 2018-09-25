@@ -15,8 +15,8 @@ export default class Enemy {
 
         bullets = this.scene.physics.add.group();
 
-        // TODO: Fix destroy bullet timing.
         this.scene.physics.add.collider(bullets, this.scene.walls, this.onCollideTrigger);
+        this.scene.physics.add.collider(this.scene.walls, this.sprite);
 
         this.destroyed = false;
         this.scene.events.on("update", this.update, this);
@@ -26,20 +26,33 @@ export default class Enemy {
 
     onCollideTrigger(bullet) {
         bullet.disableBody(true, true);
-        //bullets.getChildren()[bullets.getChildren().length - bullets.countActive(true)].disableBody(true, true);
     }
 
     update() {
         if (this.destroyed) return;
         this.movement();
+        this.chasePlayer();
         this.fireBullets();
     }
 
     movement() {
         // TODO: To be further modified for improving the movement algorithm.
-        this.sprite.body.angularVelocity = 50;
-        this.sprite.body.setVelocityX(50 * Math.cos(this.sprite.body.rotation / 180 * Math.PI));
-        this.sprite.body.setVelocityY(50 * Math.sin(this.sprite.body.rotation / 180 * Math.PI));
+        // this.sprite.body.angularVelocity = 50;
+        this.sprite.body.setVelocityX(25 * Math.cos(this.sprite.body.rotation / 180 * Math.PI));
+        this.sprite.body.setVelocityY(25 * Math.sin(this.sprite.body.rotation / 180 * Math.PI));
+    }
+
+    chasePlayer() {
+        let relativeX = this.scene.tank.body.x - this.sprite.body.x;
+        let relativeY = this.scene.tank.body.y - this.sprite.body.y;
+        let refAngleToPlayer = Math.abs(Math.atan(relativeY / relativeX));
+        let angleToPlayer = 0;
+        if (relativeX >= 0 && relativeY >= 0) angleToPlayer = refAngleToPlayer;
+        else if (relativeX >= 0 && relativeY < 0) angleToPlayer = (2 * Math.PI) - refAngleToPlayer;
+        else if (relativeX < 0 && relativeY >= 0) angleToPlayer = Math.PI - refAngleToPlayer;
+        else angleToPlayer = Math.PI + refAngleToPlayer;
+
+        this.sprite.angle = angleToPlayer * 180 / (Math.PI);
     }
 
     fireBullets() {

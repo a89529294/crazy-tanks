@@ -1,6 +1,5 @@
 import Enemy from "./enemy.js";
 let cursors;
-let tank;
 let keys;
 let bullet;
 const tankSpeed = 100;
@@ -47,8 +46,8 @@ export default class MainScene extends Phaser.Scene {
     // });
 
     // Set the tank at the center of the 800 x 576 screen and scale tank down to the size of one tile.
-    tank = this.physics.add.sprite(800 / 2, 576 / 2, 'tank').setScale(32 / 512, 32 / 512);
-    this.physics.add.collider(tank, this.walls);
+    this.tank = this.physics.add.sprite(800 / 2, 576 / 2, 'tank').setScale(32 / 512, 32 / 512);
+    this.physics.add.collider(this.tank, this.walls);
 
     //create an empty bullets group
     bullets = this.physics.add.group();
@@ -81,28 +80,28 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update() {
-    let radianAngle = Math.PI * tank.angle / 180;
-    tank.body.setVelocity(0);
+    let radianAngle = Math.PI * this.tank.angle / 180;
+    this.tank.body.setVelocity(0);
 
     if (cursors.left.isDown) {
-      tank.angle--;
+      this.tank.angle--;
     }
     if (cursors.right.isDown) {
-      tank.angle++;
+      this.tank.angle++;
     }
     if (cursors.down.isDown) {
 
-      tank.body.setVelocityX(-Math.cos(radianAngle) * tankSpeed);
-      tank.body.setVelocityY(-Math.sin(radianAngle) * tankSpeed);
+      this.tank.body.setVelocityX(-Math.cos(radianAngle) * tankSpeed);
+      this.tank.body.setVelocityY(-Math.sin(radianAngle) * tankSpeed);
     }
     if (cursors.up.isDown) {
-      tank.body.setVelocityX(Math.cos(radianAngle) * tankSpeed);
-      tank.body.setVelocityY(Math.sin(radianAngle) * tankSpeed);
+      this.tank.body.setVelocityX(Math.cos(radianAngle) * tankSpeed);
+      this.tank.body.setVelocityY(Math.sin(radianAngle) * tankSpeed);
     }
     if (keys.space.isDown) {
       if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
         //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
-        bullet = bullets.create(tank.x, tank.y, 'bullet');
+        bullet = bullets.create(this.tank.x, this.tank.y, 'bullet');
 
         console.log("number of bullets", +bullets.getChildren().length)
         initTankAngle = tank.angle;
