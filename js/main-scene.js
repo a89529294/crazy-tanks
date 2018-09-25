@@ -19,6 +19,17 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+<<<<<<< HEAD
+=======
+
+    this.health = 3;
+    this.healthText = this.add.text(16, 16, 'Health: 3', {
+      fontSize: '32px',
+      fill: '#ffffff'
+    });
+    this.healthText.depth = 10;
+
+>>>>>>> 1951d3a9570757bf525b266f4eea413b0f8204a1
     // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
     // Phaser's cache (i.e. the name you used in preload)
     const map = this.make.tilemap({
@@ -105,11 +116,17 @@ export default class MainScene extends Phaser.Scene {
 
   handleTankBulletCollision(tank, bullet) {
     bullet.disableBody(true, true);
-    tank.disableBody(true, true);
-    //explosion animation
-    this.explosion = this.physics.add.sprite(tank.x, tank.y, 'kaboom');
-    this.explosion.anims.play('explosionAnimation');
-    this.explosion.on('animationcomplete', this.handleGameOver, this)
+    this.health--;
+    this.healthText.setText("Health: " + String(this.health));
+
+    if (this.health <= 0) {
+      tank.disableBody(true, true);
+      //explosion animation
+      this.explosion = this.physics.add.sprite(tank.x, tank.y, 'kaboom');
+      this.explosion.anims.play('explosionAnimation');
+      this.explosion.on('animationcomplete', this.handleGameOver, this)
+    }
+
   }
 
 
@@ -119,6 +136,7 @@ export default class MainScene extends Phaser.Scene {
       let radianAngle = Math.PI * this.tank.angle / 180;
       this.tank.body.setVelocity(0);
 
+<<<<<<< HEAD
       if (cursors.space.isDown) {
         if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
           //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
@@ -127,6 +145,16 @@ export default class MainScene extends Phaser.Scene {
           initTankAngle = this.tank.angle;
           bullet.angle = initTankAngle;
           initFireTime = Date.now();
+=======
+    if (cursors.space.isDown) {
+      if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
+        //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
+        bullet = bullets.create(this.tank.x, this.tank.y, 'bullet');
+
+        initTankAngle = this.tank.angle;
+        bullet.angle = initTankAngle;
+        initFireTime = Date.now();
+>>>>>>> 1951d3a9570757bf525b266f4eea413b0f8204a1
 
         }
       }
