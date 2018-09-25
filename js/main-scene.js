@@ -7,7 +7,7 @@ let initTankAngle = 0;
 const tankFiringSpeed = 1000;
 let initFireTime;
 let bullets;
-let enemyBullets;
+let enemies;
 const maxNumOfBullets = 5;
 const maxHealth = 3;
 
@@ -102,12 +102,16 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.collider(bullets, this.foreground_walls, this.handleBulletWallCollision, null, this);
 
     // Create an enemy
-    this.enemy = new Enemy(this, 100, 100);
+    //this.enemy = new Enemy(this, 100, 100);
+    enemies = [new Enemy(this, 100, 100), new Enemy(this, 700, 100)]
 
-    this.physics.add.collider(this.enemy.bullets, this.tank, this.handleTankBulletCollision, null, this);
-    this.physics.add.collider(bullets, this.enemy.sprite, this.handleTankBulletCollision, null, this);
-    //recharge pack and player tank interaction
-    this.physics.add.overlap(this.tank, this.rechargePack, this.handleRechargeTankInteraction, null, this);
+    for (var i = 0; i < enemies.length; i++) {
+      this.physics.add.collider(enemies[i].bullets, this.tank, this.handleTankBulletCollision, null, this);
+      this.physics.add.collider(bullets, enemies[i].sprite, this.handleTankBulletCollision, null, this);
+    }
+
+
+    //console.log(this.anims)
 
     let explosionAnimationExist = false;
     for (let x in this.anims.anims.entries) {
@@ -141,15 +145,17 @@ export default class MainScene extends Phaser.Scene {
   handleGameOver(e) {
     //if (e.keyCode === 13) {
     this.isGameOver = true;
-    this.enemy.destroy();
+    enemies[0].destroy();
     this.tank.destroy();
     bullets.getChildren().forEach((bullet) => {
       bullet.destroy();
     })
     //bullets.destroy(true);
-    this.enemy.bullets.getChildren().forEach((bullet) => {
-      bullet.destroy();
-    })
+    for (var i = 0; i < enemies.length; i++) {
+      enemies[i].bullets.getChildren().forEach((bullet) => {
+        bullet.destroy();
+      })
+    }
     this.scene.start('GameOverScene');
     //}
   }
