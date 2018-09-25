@@ -36,6 +36,7 @@ export default class Enemy {
 
     movement() {
         // TODO: To be further modified for improving the movement algorithm.
+        // TODO: To be further modified for improving the movement algorithm.
         this.sprite.body.angularVelocity = 50;
         this.sprite.body.setVelocityX(50 * Math.cos(this.sprite.body.rotation / 180 * Math.PI));
         this.sprite.body.setVelocityY(50 * Math.sin(this.sprite.body.rotation / 180 * Math.PI));

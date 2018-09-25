@@ -1,5 +1,4 @@
 import Enemy from "./enemy.js";
-
 let cursors;
 let tank;
 let keys;
@@ -11,13 +10,11 @@ let initFireTime;
 let bullets;
 let walls;
 export default class MainScene extends Phaser.Scene {
+  constructor() {
+    super('MainScene');
+  }
   preload() {
-    this.load.image('tank', './assets/tank.png');
-    this.load.image('bullet', './assets/bullet.png');
 
-    // Load tileset and tilesmap
-    this.load.image("cottage", "./assets/tilesets/cottage.png");
-    this.load.tilemapTiledJSON("level1", "./assets/tilemaps/level1.json");
   }
 
   create() {
@@ -60,6 +57,7 @@ export default class MainScene extends Phaser.Scene {
     // Create an enemy
     this.enemy = new Enemy(this, 300, 300);
 
+
     cursors = this.input.keyboard.createCursorKeys();
     keys = this.input.keyboard.addKeys({
       'space': Phaser.Input.Keyboard.KeyCodes.SPACE
@@ -68,7 +66,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   foo() {
-    console.log('in foo');
     bullets.getChildren()[bullets.getChildren().length - bullets.countActive(true)].disableBody(true, true);
   }
 
