@@ -1,4 +1,5 @@
 import MainScene from "./main-scene.js";
+import LoadingScene from "./loading-scene.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -7,7 +8,7 @@ const config = {
 
   backgroundColor: "#8B4513",
   parent: "game-container",
-  scene: MainScene,
+  scene: [LoadingScene, MainScene],
   // pixelArt: true,
   physics: {
     default: "arcade",
