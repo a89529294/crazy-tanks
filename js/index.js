@@ -1,6 +1,7 @@
 import MainScene from "./main-scene.js";
 import LoadingScene from "./loading-scene.js";
 import StartingScene from './starting-scene.js'
+import GameOverScene from './gameover-scene.js'
 
 const config = {
   type: Phaser.AUTO,
@@ -9,7 +10,7 @@ const config = {
 
   backgroundColor: "#8B4513",
   parent: "game-container",
-  scene: [StartingScene, LoadingScene, MainScene],
+  scene: [StartingScene, LoadingScene, MainScene, GameOverScene],
   // pixelArt: true,
   physics: {
     default: "arcade",

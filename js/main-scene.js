@@ -66,6 +66,16 @@ export default class MainScene extends Phaser.Scene {
     //   'space': Phaser.Input.Keyboard.KeyCodes.SPACE
     // });
 
+    // TODO: Update the trigger of gameover trigger.
+    this.input.keyboard.on('keydown', this.handleGameOver, this);
+
+  }
+
+  // TODO: Update the trigger of gameover trigger.
+  handleGameOver(e) {
+    if (e.keyCode === 13) {
+      this.scene.start('GameOverScene');
+    }
   }
 
   handleBulletWallCollision(bullet) {
