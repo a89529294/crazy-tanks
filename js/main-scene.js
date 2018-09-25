@@ -23,9 +23,22 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    //rechage pack  TODO make a group of recharge packs and spawn them randomly
-    this.rechargePack = this.physics.add.image(400, 400, 'recharge');
-    this.rechargePack.setScale(32 / 512, 32 / 512).depth = 1;
+    //rechage pack  //TODO make a group of recharge packs and spawn them randomly
+    this.rechargePacks = this.physics.add.group({
+      key: 'recharge',
+      repeat: 2,
+      setXY: {
+        x: 50,
+        y: 50,
+        stepX: 260,
+        stepY: 120
+      }
+    });
+    this.rechargePacks.getChildren().forEach((pack) => {
+      pack.setScale(32 / 512, 32 / 512).depth = 1;
+    })
+    //this.rechargePack = this.physics.add.image(400, 400, 'recharge');
+    //this.rechargePack.setScale(32 / 512, 32 / 512).depth = 1;
 
     //num of bullets text
     this.numOfBulletsText = this.make.text({
@@ -101,6 +114,7 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.collider(bullets, this.walls, this.handleBulletWallCollision, null, this);
     this.physics.add.collider(bullets, this.foreground_walls, this.handleBulletWallCollision, null, this);
 
+    this.physics.add.overlap(this.rechargePacks, this.tank, this.handleRechargeTankInteraction, null, this);
     // Create an enemy
     //this.enemy = new Enemy(this, 100, 100);
     enemies = [new Enemy(this, 100, 100), new Enemy(this, 700, 100)]
