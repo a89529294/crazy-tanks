@@ -15,12 +15,10 @@ export default class MainScene extends Phaser.Scene {
     this.isGameOver = false;
   }
   preload() {
-
+    this.isGameOver = false;
   }
 
   create() {
-<<<<<<< HEAD
-=======
 
     this.health = 3;
     this.healthText = this.add.text(16, 16, 'Health: 3', {
@@ -29,7 +27,6 @@ export default class MainScene extends Phaser.Scene {
     });
     this.healthText.depth = 10;
 
->>>>>>> 1951d3a9570757bf525b266f4eea413b0f8204a1
     // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
     // Phaser's cache (i.e. the name you used in preload)
     const map = this.make.tilemap({
@@ -73,11 +70,12 @@ export default class MainScene extends Phaser.Scene {
 
 
     //console.log(this.anims)
-    //explosion animation
+
     let explosionAnimationExist = false;
     for (let x in this.anims.anims.entries) {
       if (x === 'explosionAnimation') explosionAnimationExist = true
     }
+    //explosion animation add only if it doesn't exist
     if (!explosionAnimationExist) {
       this.anims.create({
         key: 'explosionAnimation',
@@ -105,6 +103,15 @@ export default class MainScene extends Phaser.Scene {
   handleGameOver(e) {
     //if (e.keyCode === 13) {
     this.isGameOver = true;
+    this.enemy.destroy();
+    this.tank.destroy();
+    bullets.getChildren().forEach((bullet) => {
+      bullet.destroy;
+    })
+    //bullets.destroy(true);
+    this.enemy.bullets.getChildren().forEach((bullet) => {
+      bullet.destroy;
+    })
     this.scene.start('GameOverScene');
     //}
   }
@@ -136,7 +143,6 @@ export default class MainScene extends Phaser.Scene {
       let radianAngle = Math.PI * this.tank.angle / 180;
       this.tank.body.setVelocity(0);
 
-<<<<<<< HEAD
       if (cursors.space.isDown) {
         if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
           //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
@@ -145,16 +151,6 @@ export default class MainScene extends Phaser.Scene {
           initTankAngle = this.tank.angle;
           bullet.angle = initTankAngle;
           initFireTime = Date.now();
-=======
-    if (cursors.space.isDown) {
-      if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
-        //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
-        bullet = bullets.create(this.tank.x, this.tank.y, 'bullet');
-
-        initTankAngle = this.tank.angle;
-        bullet.angle = initTankAngle;
-        initFireTime = Date.now();
->>>>>>> 1951d3a9570757bf525b266f4eea413b0f8204a1
 
         }
       }
@@ -187,7 +183,7 @@ export default class MainScene extends Phaser.Scene {
 
       }
 
-      if (bullet) {
+      if (bullet && bullet.body) {
         bullet.body.setVelocityX(Math.cos(Math.PI * initTankAngle / 180) * 100);
         bullet.body.setVelocityY(Math.sin(Math.PI * initTankAngle / 180) * 100);
       }
