@@ -9,7 +9,7 @@ let initTankAngle = 0;
 const tankFiringSpeed = 1000;
 let initFireTime;
 let bullets;
-let walls;
+
 export default class MainScene extends Phaser.Scene {
   preload() {
     this.load.image('tank', './assets/tank.png');
@@ -31,14 +31,14 @@ export default class MainScene extends Phaser.Scene {
 
     //Parameters: layer name (or index) from Tiled, tileset, x, y
     map.createStaticLayer("Background", tileset, 0, 0);
-    walls = map.createStaticLayer("Foreground", tileset, 0, 0);
+    this.walls = map.createStaticLayer("Foreground", tileset, 0, 0);
 
     // DO NOT DELETE
     // walls.setCollisionByProperty({
     //   "collides": true
     // });
 
-    walls.setCollision(22);
+    this.walls.setCollision(22);
 
     // DO NOT DELETE
     // The following code is used for debugging.  Will be needed in the future to refactor collision.
@@ -51,11 +51,11 @@ export default class MainScene extends Phaser.Scene {
 
     // Set the tank at the center of the 800 x 576 screen and scale tank down to the size of one tile.
     tank = this.physics.add.sprite(800 / 2, 576 / 2, 'tank').setScale(32 / 512, 32 / 512);
-    this.physics.add.collider(tank, walls, this.foo);
+    this.physics.add.collider(tank, this.walls);
 
     //create an empty bullets group
     bullets = this.physics.add.group();
-    this.physics.add.collider(bullets, walls, this.foo);
+    this.physics.add.collider(bullets, this.walls, this.foo);
 
     // Create an enemy
     this.enemy = new Enemy(this, 300, 300);
