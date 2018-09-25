@@ -21,7 +21,7 @@ export default class LoadingScene extends Phaser.Scene {
         this.load.tilemapTiledJSON("level1", "../assets/tilemaps/level1.json");
 
         this.load.on('progress', function (value) {
-            console.log(value);
+            //console.log(value);
             progressBar.clear();
             progressBar.fillStyle(0xffffff, 1);
             progressBar.fillRect(250, 280, 300 * value, 30);
@@ -29,12 +29,12 @@ export default class LoadingScene extends Phaser.Scene {
         });
 
         this.load.on('fileprogress', function (file) {
-            console.log(file.src);
+            // console.log(file.src);
             assetText.setText('Loading asset: ' + file.key);
         });
 
         this.load.on('complete', function () {
-            console.log('complete');
+            // console.log('complete');
             // progressBar.destroy();
             // progressBox.destroy();
             loadingText.destroy();
@@ -82,6 +82,8 @@ export default class LoadingScene extends Phaser.Scene {
             }
         });
         assetText.setOrigin(0.5, 0.5);
+
+
     }
 
     create() {

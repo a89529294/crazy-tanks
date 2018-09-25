@@ -12,13 +12,13 @@ let enemyBullets;
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super('MainScene');
+    this.isGameOver = false;
   }
   preload() {
 
   }
 
   create() {
-
     // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
     // Phaser's cache (i.e. the name you used in preload)
     const map = this.make.tilemap({
@@ -55,20 +55,29 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.collider(bullets, this.walls, this.handleBulletWallCollision, null, this);
 
     // Create an enemy
-    this.enemy = new Enemy(this, 300, 300);
+    this.enemy = new Enemy(this, 100, 100);
 
     this.physics.add.collider(this.enemy.bullets, this.tank, this.handleTankBulletCollision, null, this);
+    this.physics.add.collider(bullets, this.enemy.sprite, this.handleTankBulletCollision, null, this);
 
+
+    //console.log(this.anims)
     //explosion animation
-    this.anims.create({
-      key: 'explosionAnimation',
-      frames: this.anims.generateFrameNumbers('kaboom', {
-        start: 0,
-        end: 23,
-        first: 23
-      }),
-      frameRate: 20,
-    });
+    let explosionAnimationExist = false;
+    for (let x in this.anims.anims.entries) {
+      if (x === 'explosionAnimation') explosionAnimationExist = true
+    }
+    if (!explosionAnimationExist) {
+      this.anims.create({
+        key: 'explosionAnimation',
+        frames: this.anims.generateFrameNumbers('kaboom', {
+          start: 0,
+          end: 23,
+          first: 23
+        }),
+        frameRate: 20,
+      });
+    }
 
     cursors = this.input.keyboard.createCursorKeys();
     //keys.space.isDown
@@ -84,6 +93,7 @@ export default class MainScene extends Phaser.Scene {
   // TODO: Update the trigger of gameover trigger.
   handleGameOver(e) {
     //if (e.keyCode === 13) {
+    this.isGameOver = true;
     this.scene.start('GameOverScene');
     //}
   }
@@ -102,54 +112,59 @@ export default class MainScene extends Phaser.Scene {
     this.explosion.on('animationcomplete', this.handleGameOver, this)
   }
 
+
+
   update() {
-    let radianAngle = Math.PI * this.tank.angle / 180;
-    this.tank.body.setVelocity(0);
+    if (!this.isGameOver) {
+      let radianAngle = Math.PI * this.tank.angle / 180;
+      this.tank.body.setVelocity(0);
 
-    if (cursors.space.isDown) {
-      if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
-        //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
-        bullet = bullets.create(tank.x, tank.y, 'bullet');
+      if (cursors.space.isDown) {
+        if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
+          //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
+          bullet = bullets.create(this.tank.x, this.tank.y, 'bullet');
 
-        initTankAngle = tank.angle;
-        bullet.angle = initTankAngle;
-        initFireTime = Date.now();
+          initTankAngle = this.tank.angle;
+          bullet.angle = initTankAngle;
+          initFireTime = Date.now();
+
+        }
+      }
+      if (cursors.left.isDown) {
+        this.tank.angle--;
+      }
+      if (cursors.right.isDown) {
+        this.tank.angle++;
+      }
+      if (cursors.down.isDown) {
+
+        this.tank.body.setVelocityX(-Math.cos(radianAngle) * tankSpeed);
+        this.tank.body.setVelocityY(-Math.sin(radianAngle) * tankSpeed);
+      }
+      if (cursors.up.isDown) {
+        this.tank.body.setVelocityX(Math.cos(radianAngle) * tankSpeed);
+        this.tank.body.setVelocityY(Math.sin(radianAngle) * tankSpeed);
+      }
+      if (cursors.space.isDown) {
+        if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
+          //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
+          bullet = bullets.create(this.tank.x, this.tank.y, 'bullet');
+
+          //console.log("number of bullets", +bullets.getChildren().length)
+          initTankAngle = tank.angle;
+          bullet.angle = initTankAngle;
+          initFireTime = Date.now();
+
+        }
 
       }
-    }
-    if (cursors.left.isDown) {
-      this.tank.angle--;
-    }
-    if (cursors.right.isDown) {
-      this.tank.angle++;
-    }
-    if (cursors.down.isDown) {
 
-      this.tank.body.setVelocityX(-Math.cos(radianAngle) * tankSpeed);
-      this.tank.body.setVelocityY(-Math.sin(radianAngle) * tankSpeed);
-    }
-    if (cursors.up.isDown) {
-      this.tank.body.setVelocityX(Math.cos(radianAngle) * tankSpeed);
-      this.tank.body.setVelocityY(Math.sin(radianAngle) * tankSpeed);
-    }
-    if (cursors.space.isDown) {
-      if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
-        //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
-        bullet = bullets.create(this.tank.x, this.tank.y, 'bullet');
-
-        console.log("number of bullets", +bullets.getChildren().length)
-        initTankAngle = tank.angle;
-        bullet.angle = initTankAngle;
-        initFireTime = Date.now();
-
+      if (bullet) {
+        bullet.body.setVelocityX(Math.cos(Math.PI * initTankAngle / 180) * 100);
+        bullet.body.setVelocityY(Math.sin(Math.PI * initTankAngle / 180) * 100);
       }
-
     }
 
-    if (bullet) {
-      bullet.body.setVelocityX(Math.cos(Math.PI * initTankAngle / 180) * 100);
-      bullet.body.setVelocityY(Math.sin(Math.PI * initTankAngle / 180) * 100);
-    }
 
   }
 
