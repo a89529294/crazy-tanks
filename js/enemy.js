@@ -30,8 +30,15 @@ export default class Enemy {
         //     delay: 250,
         //     callback: () => (this.canJump = true)
         // });
-        this.sprite.body.setVelocityX(Math.random() * 100 - 50)
-        this.sprite.body.setVelocityY(Math.random() * 100 - 50)
+
+        this.movement();
+    }
+
+    movement() {
+        // TODO: To be further modified for improving the movement algorithm.
+        this.sprite.body.angularVelocity = 50;
+        this.sprite.body.setVelocityX(50 * Math.cos(this.sprite.body.rotation / 180 * Math.PI));
+        this.sprite.body.setVelocityY(50 * Math.sin(this.sprite.body.rotation / 180 * Math.PI));
     }
 
     destroy() {
