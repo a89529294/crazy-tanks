@@ -57,7 +57,7 @@ export default class MainScene extends Phaser.Scene {
     // Create an enemy
     this.enemy = new Enemy(this, 300, 300);
 
-    this.physics.add.collider(this.enemy.bullets, tank, this.handleTankBulletCollision, null, this);
+    this.physics.add.collider(this.enemy.bullets, this.tank, this.handleTankBulletCollision, null, this);
 
     //explosion animation
     this.anims.create({
@@ -132,7 +132,7 @@ export default class MainScene extends Phaser.Scene {
       this.tank.body.setVelocityX(Math.cos(radianAngle) * tankSpeed);
       this.tank.body.setVelocityY(Math.sin(radianAngle) * tankSpeed);
     }
-    if (keys.space.isDown) {
+    if (cursors.space.isDown) {
       if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
         //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
         bullet = bullets.create(this.tank.x, this.tank.y, 'bullet');
