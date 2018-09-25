@@ -1,4 +1,4 @@
-const loadingTime = 300
+const loadingTime = 100
 
 export default class LoadingScene extends Phaser.Scene {
     constructor() {
@@ -7,6 +7,11 @@ export default class LoadingScene extends Phaser.Scene {
     preload() {
         this.load.image('tank', '../assets/tank.png');
         this.load.image('bullet', '../assets/bullet.png');
+        this.load.spritesheet('kaboom', '../assets/explosions.png', {
+            frameWidth: 64,
+            frameHeight: 64,
+            endFrame: 23
+        });
 
         // Load tileset and tilesmap
         this.load.image("cottage", "../assets/tilesets/cottage.png");
@@ -14,6 +19,7 @@ export default class LoadingScene extends Phaser.Scene {
             this.load.image("cottage" + i, "../assets/tilesets/cottage.png");
         }
         this.load.tilemapTiledJSON("level1", "../assets/tilemaps/level1.json");
+
         this.load.on('progress', function (value) {
             console.log(value);
             progressBar.clear();

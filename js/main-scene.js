@@ -7,6 +7,7 @@ let initTankAngle = 0;
 const tankFiringSpeed = 1000;
 let initFireTime;
 let bullets;
+let enemyBullets;
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -51,38 +52,71 @@ export default class MainScene extends Phaser.Scene {
 
     //create an empty bullets group
     bullets = this.physics.add.group();
-    this.physics.add.collider(bullets, this.walls, this.foo);
+    this.physics.add.collider(bullets, this.walls, this.handleBulletWallCollision, null, this);
 
     // Create an enemy
     this.enemy = new Enemy(this, 300, 300);
 
+    this.physics.add.collider(this.enemy.bullets, tank, this.handleTankBulletCollision, null, this);
 
-    cursors = this.input.keyboard.createCursorKeys();
-    keys = this.input.keyboard.addKeys({
-      'space': Phaser.Input.Keyboard.KeyCodes.SPACE
+    //explosion animation
+    this.anims.create({
+      key: 'explosionAnimation',
+      frames: this.anims.generateFrameNumbers('kaboom', {
+        start: 0,
+        end: 23,
+        first: 23
+      }),
+      frameRate: 20,
     });
 
+    cursors = this.input.keyboard.createCursorKeys();
+    //keys.space.isDown
+    // keys = this.input.keyboard.addKeys({
+    //   'space': Phaser.Input.Keyboard.KeyCodes.SPACE
+    // });
+
     // TODO: Update the trigger of gameover trigger.
-    this.input.keyboard.on('keydown', this.handleGameOver, this);
+    //this.input.keyboard.on('keydown', this.handleGameOver, this);
 
   }
 
   // TODO: Update the trigger of gameover trigger.
   handleGameOver(e) {
-    if (e.keyCode === 13) {
-      this.scene.start('GameOverScene');
-    }
+    //if (e.keyCode === 13) {
+    this.scene.start('GameOverScene');
+    //}
   }
 
-  foo(bullet) {
+  handleBulletWallCollision(bullet) {
     bullet.disableBody(true, true);
     // bullets.getChildren()[bullets.getChildren().length - bullets.countActive(true)].disableBody(true, true);
+  }
+
+  handleTankBulletCollision(tank, bullet) {
+    bullet.disableBody(true, true);
+    tank.disableBody(true, true);
+    //explosion animation
+    this.explosion = this.physics.add.sprite(tank.x, tank.y, 'kaboom');
+    this.explosion.anims.play('explosionAnimation');
+    this.explosion.on('animationcomplete', this.handleGameOver, this)
   }
 
   update() {
     let radianAngle = Math.PI * this.tank.angle / 180;
     this.tank.body.setVelocity(0);
 
+    if (cursors.space.isDown) {
+      if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
+        //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
+        bullet = bullets.create(tank.x, tank.y, 'bullet');
+
+        initTankAngle = tank.angle;
+        bullet.angle = initTankAngle;
+        initFireTime = Date.now();
+
+      }
+    }
     if (cursors.left.isDown) {
       this.tank.angle--;
     }

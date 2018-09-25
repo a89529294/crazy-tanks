@@ -1,10 +1,8 @@
-let bullet;
-let bullets;
-
 export default class Enemy {
 
     constructor(scene, x, y) {
         this.scene = scene;
+
 
         // Create the physics-based sprite that we will move around and animate
         this.sprite = scene.physics.add.sprite(x, y, "tank").setScale(32 / 512, 32 / 512);
@@ -13,9 +11,9 @@ export default class Enemy {
 
         this.sprite.tint = "0xff0000";
 
-        bullets = this.scene.physics.add.group();
+        this.bullets = this.scene.physics.add.group();
 
-        this.scene.physics.add.collider(bullets, this.scene.walls, this.onCollideTrigger);
+        this.scene.physics.add.collider(this.bullets, this.scene.walls, this.onCollideTrigger);
         this.scene.physics.add.collider(this.scene.walls, this.sprite);
 
         this.destroyed = false;
@@ -58,10 +56,10 @@ export default class Enemy {
     fireBullets() {
         // TODO: To be further modified for improving the firing algorithm.
         if (isNaN(this.lastFireTime) || Date.now() - this.lastFireTime > this.fireRate) {
-            bullet = bullets.create(this.sprite.body.x, this.sprite.body.y, 'bullet');
-            bullet.angle = this.sprite.body.rotation;
-            bullet.body.setVelocityX(50 * Math.cos(bullet.angle / 180 * Math.PI));
-            bullet.body.setVelocityY(50 * Math.sin(bullet.angle / 180 * Math.PI));
+            this.bullet = this.bullets.create(this.sprite.body.x, this.sprite.body.y, 'bullet');
+            this.bullet.angle = this.sprite.body.rotation;
+            this.bullet.body.setVelocityX(50 * Math.cos(this.bullet.angle / 180 * Math.PI));
+            this.bullet.body.setVelocityY(50 * Math.sin(this.bullet.angle / 180 * Math.PI));
             this.lastFireTime = Date.now();
         }
     }
