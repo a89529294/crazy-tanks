@@ -9,10 +9,7 @@ let initFireTime;
 let bullets;
 let enemies;
 const maxNumOfBullets = 5;
-let numOfBullets = maxNumOfBullets;
 const maxHealth = 3;
-let health = maxHealth;
-
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -21,14 +18,33 @@ export default class MainScene extends Phaser.Scene {
   }
   preload() {
     this.isGameOver = false;
+    this.numOfBullets = maxNumOfBullets;
+    this.health = maxHealth;
   }
 
   create() {
+
+    this.rechargePacks = this.physics.add.group({
+      key: 'recharge',
+      repeat: 2,
+      setXY: {
+        x: 50,
+        y: 50,
+        stepX: 200 + Math.random() * 130,
+        stepY: 100 + Math.random() * 50
+      }
+    });
+    this.rechargePacks.getChildren().forEach((pack) => {
+      pack.setScale(32 / 512, 32 / 512).depth = 1;
+    })
+    //this.rechargePack = this.physics.add.image(400, 400, 'recharge');
+    //this.rechargePack.setScale(32 / 512, 32 / 512).depth = 1;
+
     //num of bullets text
     this.numOfBulletsText = this.make.text({
       x: 450,
       y: 16,
-      text: 'Bullets left: ' + numOfBullets,
+      text: 'Bullets left: ' + maxNumOfBullets,
       style: {
         fontSize: '32px',
         fill: '#ffffff'
@@ -98,6 +114,7 @@ export default class MainScene extends Phaser.Scene {
     this.physics.add.collider(bullets, this.walls, this.handleBulletWallCollision, null, this);
     this.physics.add.collider(bullets, this.foreground_walls, this.handleBulletWallCollision, null, this);
 
+    this.physics.add.overlap(this.rechargePacks, this.tank, this.handleRechargeTankInteraction, null, this);
     // Create an enemy
     //this.enemy = new Enemy(this, 100, 100);
     enemies = [new Enemy(this, 100, 100), new Enemy(this, 700, 100)]
@@ -144,13 +161,13 @@ export default class MainScene extends Phaser.Scene {
     this.isGameOver = true;
     this.tank.destroy();
     bullets.getChildren().forEach((bullet) => {
-      bullet.destroy;
+      bullet.destroy();
     })
     //bullets.destroy(true);
     for (var i = 0; i < enemies.length; i++) {
       enemies[i].destroy();
       enemies[i].bullets.getChildren().forEach((bullet) => {
-        bullet.destroy;
+        bullet.destroy();
       })
     }
     this.scene.start('GameOverScene');
@@ -164,10 +181,10 @@ export default class MainScene extends Phaser.Scene {
 
   handleTankBulletCollision(tank, bullet) {
     bullet.disableBody(true, true);
-    health--;
-    this.healthText.setText("Health: " + String(health));
+    this.health--;
+    this.healthText.setText("Health: " + String(this.health));
 
-    if (health <= 0) {
+    if (this.health <= 0) {
       tank.disableBody(true, true);
       //explosion animation
       this.explosion = this.physics.add.sprite(tank.x, tank.y, 'kaboom');
@@ -193,6 +210,11 @@ export default class MainScene extends Phaser.Scene {
       this.explosion.on('animationcomplete', this.handleGameOver, this)
     }
   }
+  handleRechargeTankInteraction(tank, rechargePack) {
+    rechargePack.destroy();
+    this.numOfBullets = maxNumOfBullets;
+    this.numOfBulletsText.setText('Bullets left: ' + this.numOfBullets);
+  }
 
   update() {
     if (!this.isGameOver) {
@@ -201,10 +223,10 @@ export default class MainScene extends Phaser.Scene {
 
       if (cursors.space.isDown) {
 
-        if (bullets.getChildren().length < maxNumOfBullets && (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed)) {
+        if ((this.numOfBullets > 0) && (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed)) {
           //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
-          numOfBullets--;
-          this.numOfBulletsText.setText('Bullets left: ' + numOfBullets);
+          this.numOfBullets--;
+          this.numOfBulletsText.setText('Bullets left: ' + this.numOfBullets);
 
           bullet = bullets.create(this.tank.x, this.tank.y, 'bullet');
 
