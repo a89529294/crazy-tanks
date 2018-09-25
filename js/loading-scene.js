@@ -5,6 +5,7 @@ export default class LoadingScene extends Phaser.Scene {
         super('LoadingScene');
     }
     preload() {
+        this.load.image('recharge', '../assets/recharge.png')
         this.load.image('tank', '../assets/tank.png');
         this.load.image('bullet', '../assets/bullet.png');
         this.load.spritesheet('kaboom', '../assets/explosions.png', {

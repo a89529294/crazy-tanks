@@ -24,6 +24,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+    this.add.image(200, 200, 'recharge');
     //num of bullets text
     this.numOfBulletsText = this.make.text({
       x: 450,
