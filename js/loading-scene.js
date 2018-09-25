@@ -14,11 +14,14 @@ export default class LoadingScene extends Phaser.Scene {
         });
 
         // Load tileset and tilesmap
+        this.load.image("Outside_A2", "../assets/tilesets/Outside_A2.png");
+        this.load.image("Outside_B", "../assets/tilesets/Outside_B.png");
         this.load.image("cottage", "../assets/tilesets/cottage.png");
         for (let i = 0; i < loadingTime; i++) {
             this.load.image("cottage" + i, "../assets/tilesets/cottage.png");
         }
         this.load.tilemapTiledJSON("level1", "../assets/tilemaps/level1.json");
+        this.load.tilemapTiledJSON("level2", "../assets/tilemaps/level2.json");
 
         this.load.on('progress', function (value) {
             //console.log(value);

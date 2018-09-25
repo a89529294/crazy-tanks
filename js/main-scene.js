@@ -31,20 +31,30 @@ export default class MainScene extends Phaser.Scene {
     // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
     // Phaser's cache (i.e. the name you used in preload)
     const map = this.make.tilemap({
-      key: "level1"
+      //key: "level1"
+      key: "level2"
     });
-    const tileset = map.addTilesetImage("cottage");
+    // tileset = map.addTilesetImage("cottage");
+    this.tileset_background = map.addTilesetImage("Outside_A2");
+    this.tileset_foreground = map.addTilesetImage("Outside_A2");
 
     //Parameters: layer name (or index) from Tiled, tileset, x, y
-    map.createStaticLayer("Background", tileset, 0, 0);
-    this.walls = map.createStaticLayer("Foreground", tileset, 0, 0);
+    this.walls = map.createStaticLayer("Background", this.tileset_background, 0, 0);
+    this.foreground = map.createStaticLayer("Foreground", this.tileset_foreground, 0, 0);
 
     // DO NOT DELETE
     // walls.setCollisionByProperty({
     //   "collides": true
     // });
 
-    this.walls.setCollision(22);
+    this.walls.setCollision(370);
+    this.walls.setCollision(371);
+    this.walls.setCollision(372);
+    this.walls.setCollision(394);
+    this.walls.setCollision(396);
+    this.walls.setCollisionBetween(418, 420);
+    //this.foreground.setCollision(22);
+
 
     // DO NOT DELETE
     // The following code is used for debugging.  Will be needed in the future to refactor collision.
