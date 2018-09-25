@@ -3,7 +3,6 @@ export default class Enemy {
     constructor(scene, x, y) {
         this.scene = scene;
 
-
         // Create the physics-based sprite that we will move around and animate
         this.sprite = scene.physics.add.sprite(x, y, "tank").setScale(32 / 512, 32 / 512);
         this.lastFireTime = 0;
