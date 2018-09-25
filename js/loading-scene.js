@@ -7,9 +7,10 @@ export default class LoadingScene extends Phaser.Scene {
     preload() {
         this.load.image('tank', '../assets/tank.png');
         this.load.image('bullet', '../assets/bullet.png');
-        this.load.spritesheet('explosion', '../assets/explosions.png', {
-            frameWidth: 32,
-            frameHeight: 32
+        this.load.spritesheet('kaboom', '../assets/explosions.png', {
+            frameWidth: 64,
+            frameHeight: 64,
+            endFrame: 23
         });
 
         // Load tileset and tilesmap

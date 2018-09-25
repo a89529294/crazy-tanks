@@ -53,12 +53,23 @@ export default class MainScene extends Phaser.Scene {
 
     //create an empty bullets group
     bullets = this.physics.add.group();
-    this.physics.add.collider(bullets, this.walls, this.handleBulletWallCollision);
+    this.physics.add.collider(bullets, this.walls, this.handleBulletWallCollision, null, this);
 
     // Create an enemy
     this.enemy = new Enemy(this, 300, 300);
 
-    this.physics.add.collider(this.enemy.bullets, tank, this.handleTankBulletCollision);
+    this.physics.add.collider(this.enemy.bullets, tank, this.handleTankBulletCollision, null, this);
+
+    //explosion animation
+    this.anims.create({
+      key: 'explosionAnimation',
+      frames: this.anims.generateFrameNumbers('kaboom', {
+        start: 0,
+        end: 23,
+        first: 23
+      }),
+      frameRate: 20,
+    });
 
     cursors = this.input.keyboard.createCursorKeys();
     //keys.space.isDown
@@ -67,15 +78,15 @@ export default class MainScene extends Phaser.Scene {
     // });
 
     // TODO: Update the trigger of gameover trigger.
-    this.input.keyboard.on('keydown', this.handleGameOver, this);
+    //this.input.keyboard.on('keydown', this.handleGameOver, this);
 
   }
 
   // TODO: Update the trigger of gameover trigger.
   handleGameOver(e) {
-    if (e.keyCode === 13) {
-      this.scene.start('GameOverScene');
-    }
+    //if (e.keyCode === 13) {
+    this.scene.start('GameOverScene');
+    //}
   }
 
   handleBulletWallCollision(bullet) {
@@ -85,7 +96,11 @@ export default class MainScene extends Phaser.Scene {
 
   handleTankBulletCollision(tank, bullet) {
     bullet.disableBody(true, true);
-    //tank.disableBody(true, true);
+    tank.disableBody(true, true);
+    //explosion animation
+    this.explosion = this.physics.add.sprite(tank.x, tank.y, 'kaboom');
+    this.explosion.anims.play('explosionAnimation');
+    this.explosion.on('animationcomplete', this.handleGameOver, this)
   }
 
   update() {
