@@ -1,14 +1,19 @@
+const loadingTime = 300
+
 export default class LoadingScene extends Phaser.Scene {
     constructor() {
         super('LoadingScene');
     }
     preload() {
-        this.load.image('tank', './assets/tank.png');
-        this.load.image('bullet', './assets/bullet.png');
+        this.load.image('tank', '../assets/tank.png');
+        this.load.image('bullet', '../assets/bullet.png');
 
         // Load tileset and tilesmap
-        this.load.image("cottage", "./assets/tilesets/cottage.png");
-        this.load.tilemapTiledJSON("level1", "./assets/tilemaps/level1.json");
+        this.load.image("cottage", "../assets/tilesets/cottage.png");
+        for (let i = 0; i < loadingTime; i++) {
+            this.load.image("cottage" + i, "../assets/tilesets/cottage.png");
+        }
+        this.load.tilemapTiledJSON("level1", "../assets/tilemaps/level1.json");
         this.load.on('progress', function (value) {
             console.log(value);
             progressBar.clear();
