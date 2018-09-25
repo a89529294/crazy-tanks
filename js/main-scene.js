@@ -8,24 +8,40 @@ const tankFiringSpeed = 1000;
 let initFireTime;
 let bullets;
 let enemyBullets;
+const maxNumOfBullets = 5;
+let numOfBullets = maxNumOfBullets;
+const maxHealth = 3;
+let health = maxHealth;
+
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super('MainScene');
-    this.isGameOver = false;
+
   }
   preload() {
     this.isGameOver = false;
   }
 
   create() {
+    //num of bullets text
+    this.numOfBulletsText = this.make.text({
+      x: 450,
+      y: 16,
+      text: 'Bullets left: ' + numOfBullets,
+      style: {
+        fontSize: '32px',
+        fill: '#ffffff'
+      }
+    });
 
-    this.health = 3;
-    this.healthText = this.add.text(16, 16, 'Health: 3', {
+    this.numOfBulletsText.depth = 1;
+    //health text
+    this.healthText = this.add.text(16, 16, 'Health: ' + maxHealth, {
       fontSize: '32px',
       fill: '#ffffff'
     });
-    this.healthText.depth = 10;
+    this.healthText.depth = 1;
 
     // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
     // Phaser's cache (i.e. the name you used in preload)
@@ -143,10 +159,10 @@ export default class MainScene extends Phaser.Scene {
 
   handleTankBulletCollision(tank, bullet) {
     bullet.disableBody(true, true);
-    this.health--;
-    this.healthText.setText("Health: " + String(this.health));
+    health--;
+    this.healthText.setText("Health: " + String(health));
 
-    if (this.health <= 0) {
+    if (health <= 0) {
       tank.disableBody(true, true);
       //explosion animation
       this.explosion = this.physics.add.sprite(tank.x, tank.y, 'kaboom');
@@ -164,8 +180,12 @@ export default class MainScene extends Phaser.Scene {
       this.tank.body.setVelocity(0);
 
       if (cursors.space.isDown) {
-        if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
+
+        if (bullets.getChildren().length < maxNumOfBullets && (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed)) {
           //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
+          numOfBullets--;
+          this.numOfBulletsText.setText('Bullets left: ' + numOfBullets);
+
           bullet = bullets.create(this.tank.x, this.tank.y, 'bullet');
 
           initTankAngle = this.tank.angle;
@@ -189,19 +209,7 @@ export default class MainScene extends Phaser.Scene {
         this.tank.body.setVelocityX(Math.cos(radianAngle) * tankSpeed);
         this.tank.body.setVelocityY(Math.sin(radianAngle) * tankSpeed);
       }
-      if (cursors.space.isDown) {
-        if (isNaN(initFireTime) || Date.now() - initFireTime > tankFiringSpeed) {
-          //bullet = this.physics.add.sprite(tank.x, tank.y, 'bullet');
-          bullet = bullets.create(this.tank.x, this.tank.y, 'bullet');
 
-          //console.log("number of bullets", +bullets.getChildren().length)
-          initTankAngle = tank.angle;
-          bullet.angle = initTankAngle;
-          initFireTime = Date.now();
-
-        }
-
-      }
 
       if (bullet && bullet.body) {
         bullet.body.setVelocityX(Math.cos(Math.PI * initTankAngle / 180) * 100);
